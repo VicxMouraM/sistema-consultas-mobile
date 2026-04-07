@@ -3,7 +3,7 @@ import { StyleSheet } from "react-native";
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#79059C",
+    backgroundColor: "",
   },
   scrollContent: {
     padding: 20,
@@ -17,12 +17,12 @@ export const styles = StyleSheet.create({
     textAlign: "center",
     fontSize: 28,
     fontWeight: "bold",
-    color: "#fff",
+    color: "black",
     marginBottom: 8,
   },
   subtitulo: {
     fontSize: 18,
-    color: "#fff",
+    color: "black",
     opacity: 0.9,
   },
 });
