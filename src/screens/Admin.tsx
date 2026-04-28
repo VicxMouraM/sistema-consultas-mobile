@@ -1,260 +1,245 @@
+/**
+ * Admin Screen - Painel Administrativo
+ * Gerenciamento completo do sistema (apenas admin)
+ */
+
 import React, { useState, useEffect } from "react";
 import {
-  View,
-  Text,
-  TextInput,
-  Button,
-  StyleSheet,
-  ScrollView,
-  Alert,
+ View,
+ Text,
+ StyleSheet,
+ ScrollView,
+ TouchableOpacity,
+ Alert,
 } from "react-native";
 import { StatusBar } from "expo-status-bar";
-import {
-  obterEspecialidades,
-  obterMedicos,
-  salvarEspecialidades,
-  salvarMedicos,
-  obterConsultas,
-  salvarConsultas,
-} from "../services/storage";
-import { Especialidade } from "../types/especialidade";
-import { Medico } from "../interfaces/medico";
-import { Paciente } from "../types/paciente";
+import { useAuth } from "../contexts/AuthContext";
+import consultasService from "../services/consultasService";
 import { Consulta } from "../interfaces/consulta";
 
 export default function Admin({ navigation }: any) {
-  // Estados para especialidade
-  const [nomeEsp, setNomeEsp] = useState("");
-  const [descEsp, setDescEsp] = useState("");
-  const [especialidades, setEspecialidades] = useState<Especialidade[]>([]);
+ const { usuario, logout } = useAuth();
+ const [consultas, setConsultas] = useState<Consulta[]>([]);
+ const [loading, setLoading] = useState(true);
 
-  // Estados para médico
-  const [nomeMed, setNomeMed] = useState("");
-  const [crmMed, setCrmMed] = useState("");
-  const [medicos, setMedicos] = useState<Medico[]>([]);
+ useEffect(() => {
+ carregarConsultas();
+ }, []);
 
-  // Estados para consulta de teste
-  const [nomePac, setNomePac] = useState("");
-  const [dataConsulta, setDataConsulta] = useState("");
+ async function carregarConsultas() {
+ try {
+ const todasConsultas = await consultasService.listarConsultas(
+ usuario?.id,
+ true // isAdmin
+ );
+ setConsultas(todasConsultas);
+ } catch (error) {
+ console.error("Erro ao carregar consultas:", error);
+ } finally {
+ setLoading(false);
+ }
+ }
 
-  useEffect(() => {
-    carregarDados();
-  }, []);
+ async function handleLogout() {
+ try {
+ await logout();
+ } catch (error) {
+ Alert.alert("Erro", "Não foi possível sair da conta. Tente novamente.");
+ }
+ }
 
-  async function carregarDados() {
-    const esps = await obterEspecialidades();
-    const meds = await obterMedicos();
-    setEspecialidades(esps);
-    setMedicos(meds);
-  }
+ const consultasAgendadas = consultas.filter((c) => c.status === "agendada").length;
+ const consultasConfirmadas = consultas.filter((c) => c.status === "confirmada").length;
+ const consultasRealizadas = consultas.filter((c) => c.status === "realizada").length;
+ const consultasCanceladas = consultas.filter((c) => c.status === "cancelada").length;
 
-  function adicionarEspecialidade() {
-    if (!nomeEsp || !descEsp) {
-      Alert.alert("Erro", "Preencha nome e descrição");
-      return;
-    }
+ return (
+ <View style={styles.container}>
+ <StatusBar style="light" />
 
-    const novaEsp: Especialidade = {
-      id: especialidades.length + 1,
-      nome: nomeEsp,
-      descricao: descEsp,
-    };
+ <ScrollView>
+ <View style={styles.header}>
+ <Text style={styles.icone}>👨‍💼</Text>
+ <Text style={styles.titulo}>Painel Admin</Text>
+ <Text style={styles.subtitulo}>Bem-vindo, {usuario?.nome}</Text>
+ </View>
 
-    const novasEsps = [...especialidades, novaEsp];
-    setEspecialidades(novasEsps);
-    salvarEspecialidades(novasEsps);
+ {/* Dashboard de Estatísticas */}
+ <View style={styles.statsContainer}>
+ <Text style={styles.sectionTitle}>📊 Estatísticas</Text>
 
-    setNomeEsp("");
-    setDescEsp("");
-    Alert.alert("Sucesso", "Especialidade adicionada!");
-  }
+ <View style={styles.statsGrid}>
+ <View style={[styles.statCard, { backgroundColor: "#2196F3" }]}>
+ <Text style={styles.statNumber}>{consultasAgendadas}</Text>
+ <Text style={styles.statLabel}>Agendadas</Text>
+ </View>
 
-  function adicionarMedico() {
-    if (!nomeMed || !crmMed) {
-      Alert.alert("Erro", "Preencha nome e CRM");
-      return;
-    }
+ <View style={[styles.statCard, { backgroundColor: "#4CAF50" }]}>
+ <Text style={styles.statNumber}>{consultasConfirmadas}</Text>
+ <Text style={styles.statLabel}>Confirmadas</Text>
+ </View>
 
-    if (especialidades.length === 0) {
-      Alert.alert("Erro", "Adicione uma especialidade primeiro!");
-      return;
-    }
+ <View style={[styles.statCard, { backgroundColor: "#9C27B0" }]}>
+ <Text style={styles.statNumber}>{consultasRealizadas}</Text>
+ <Text style={styles.statLabel}>Realizadas</Text>
+ </View>
 
-    const novoMed: Medico = {
-      id: medicos.length + 1,
-      nome: nomeMed,
-      crm: crmMed,
-      especialidade: especialidades[0], // Usa a primeira especialidade
-      ativo: true,
-    };
+ <View style={[styles.statCard, { backgroundColor: "#f44336" }]}>
+ <Text style={styles.statNumber}>{consultasCanceladas}</Text>
+ <Text style={styles.statLabel}>Canceladas</Text>
+ </View>
+ </View>
+ </View>
 
-    const novosMeds = [...medicos, novoMed];
-    setMedicos(novosMeds);
-    salvarMedicos(novosMeds);
+ {/* Menu de Ações */}
+ <View style={styles.menuContainer}>
+ <Text style={styles.sectionTitle}>🔧 Ações Rápidas</Text>
 
-    setNomeMed("");
-    setCrmMed("");
-    Alert.alert("Sucesso", "Médico adicionado!");
-  }
+ <TouchableOpacity
+ style={[styles.menuItem, { backgroundColor: "#79059C" }]}
+ onPress={() => navigation.navigate("ConsultasList")}
+ >
+ <Text style={styles.menuIcone}>📋</Text>
+ <Text style={styles.menuTitulo}>Ver Todas Consultas</Text>
+ <Text style={styles.menuDescricao}>
+ {consultas.length} consulta(s) no sistema
+ </Text>
+ </TouchableOpacity>
 
-  async function criarConsultaTeste() {
-    if (!nomePac || !dataConsulta) {
-      Alert.alert("Erro", "Preencha nome do paciente e data");
-      return;
-    }
+ <TouchableOpacity
+ style={[styles.menuItem, { backgroundColor: "#4CAF50" }]}
+ onPress={() => navigation.navigate("NovaConsulta")}
+ >
+ <Text style={styles.menuIcone}>➕</Text>
+ <Text style={styles.menuTitulo}>Nova Consulta</Text>
+ <Text style={styles.menuDescricao}>Agendar consulta para paciente</Text>
+ </TouchableOpacity>
+ </View>
 
-    if (medicos.length === 0) {
-      Alert.alert("Erro", "Adicione um médico primeiro!");
-      return;
-    }
+ {/* Botão de Logout */}
+ <TouchableOpacity
+ style={styles.logoutButton}
+ onPress={handleLogout}
+ >
+ <Text style={styles.logoutText}>🚪 Sair da Conta Admin</Text>
+ </TouchableOpacity>
 
-    const pacienteTeste: Paciente = {
-      id: 1,
-      nome: nomePac,
-      cpf: "123.456.789-00",
-      email: "paciente@email.com",
-      telefone: "(11) 98765-4321",
-    };
-
-    const [dia, mes, ano] = dataConsulta.split("/");
-    const data = new Date(Number(ano), Number(mes) - 1, Number(dia));
-
-    const novaConsulta: Consulta = {
-      id: Date.now(),
-      medico: medicos[0],
-      paciente: pacienteTeste,
-      data: data,
-      valor: 350,
-      status: "agendada",
-      observacoes: "Consulta de teste",
-    };
-
-    const consultasAtuais = await obterConsultas();
-    await salvarConsultas([...consultasAtuais, novaConsulta]);
-
-    setNomePac("");
-    setDataConsulta("");
-    Alert.alert("Sucesso", "Consulta criada! Volte para Home", [
-      { text: "OK", onPress: () => navigation.navigate("Home") },
-    ]);
-  }
-
-  return (
-    <View style={styles.container}>
-      <StatusBar style="light" />
-      <ScrollView style={styles.content}>
-        {/* Seção Especialidades */}
-        <View style={styles.secao}>
-          <Text style={styles.titulo}>1. Adicionar Especialidade</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Nome da especialidade"
-            value={nomeEsp}
-            onChangeText={setNomeEsp}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Descrição"
-            value={descEsp}
-            onChangeText={setDescEsp}
-          />
-          <Button title="Adicionar Especialidade" onPress={adicionarEspecialidade} />
-
-          <View style={styles.lista}>
-            {especialidades.map((esp) => (
-              <Text key={esp.id} style={styles.item}>
-                • {esp.nome} - {esp.descricao}
-              </Text>
-            ))}
-          </View>
-        </View>
-
-        {/* Seção Médicos */}
-        <View style={styles.secao}>
-          <Text style={styles.titulo}>2. Adicionar Médico</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Nome do médico"
-            value={nomeMed}
-            onChangeText={setNomeMed}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="CRM"
-            value={crmMed}
-            onChangeText={setCrmMed}
-          />
-          <Button title="Adicionar Médico" onPress={adicionarMedico} />
-
-          <View style={styles.lista}>
-            {medicos.map((med) => (
-              <Text key={med.id} style={styles.item}>
-                • {med.nome} ({med.crm}) - {med.especialidade.nome}
-              </Text>
-            ))}
-          </View>
-        </View>
-
-        {/* Seção Consulta  Teste */}
-        <View style={styles.secao}>
-          <Text style={styles.titulo}>3. Criar Consulta de Teste</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Nome do paciente"
-            value={nomePac}
-            onChangeText={setNomePac}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Data (DD/MM/AAAA)"
-            value={dataConsulta}
-            onChangeText={setDataConsulta}
-          />
-          <Button title="Criar Consulta" onPress={criarConsultaTeste} />
-        </View>
-
-        <View style={{ height: 40 }} />
-      </ScrollView>
-    </View>
-  );
+ <View style={styles.footer}>
+ <Text style={styles.footerText}>Sistema de Consultas Médicas</Text>
+ <Text style={styles.footerSubtext}>Painel Administrativo - FIAP</Text>
+ </View>
+ </ScrollView>
+ </View>
+ );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#f5f5f5",
-  },
-  content: {
-    flex: 1,
-    padding: 20,
-  },
-  secao: {
-    backgroundColor: "#fff",
-    padding: 20,
-    borderRadius: 8,
-    marginBottom: 20,
-  },
-  titulo: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: "#333",
-    marginBottom: 15,
-  },
-  input: {
-    backgroundColor: "#f5f5f5",
-    borderWidth: 1,
-    borderColor: "#ddd",
-    borderRadius: 8,
-    padding: 12,
-    marginBottom: 10,
-    fontSize: 16,
-  },
-  lista: {
-    marginTop: 15,
-  },
-  item: {
-    fontSize: 14,
-    color: "#666",
-    marginBottom: 8,
-  },
+ container: {
+ flex: 1,
+ backgroundColor: "#f5f5f5",
+ },
+ header: {
+ backgroundColor: "#79059C",
+ padding: 32,
+ paddingTop: 16,
+ alignItems: "center",
+ },
+ icone: {
+ fontSize: 60,
+ marginBottom: 16,
+ },
+ titulo: {
+ fontSize: 28,
+ fontWeight: "bold",
+ color: "#fff",
+ marginBottom: 8,
+ },
+ subtitulo: {
+ fontSize: 16,
+ color: "#fff",
+ opacity: 0.9,
+ },
+ statsContainer: {
+ padding: 20,
+ },
+ sectionTitle: {
+ fontSize: 18,
+ fontWeight: "bold",
+ color: "#333",
+ marginBottom: 16,
+ },
+ statsGrid: {
+ flexDirection: "row",
+ flexWrap: "wrap",
+ gap: 12,
+ },
+ statCard: {
+ flex: 1,
+ minWidth: "45%",
+ padding: 20,
+ borderRadius: 12,
+ alignItems: "center",
+ },
+ statNumber: {
+ fontSize: 32,
+ fontWeight: "bold",
+ color: "#fff",
+ marginBottom: 4,
+ },
+ statLabel: {
+ fontSize: 14,
+ color: "#fff",
+ opacity: 0.9,
+ },
+ menuContainer: {
+ padding: 20,
+ paddingTop: 0,
+ },
+ menuItem: {
+ padding: 24,
+ borderRadius: 16,
+ marginBottom: 16,
+ elevation: 3,
+ },
+ menuIcone: {
+ fontSize: 40,
+ marginBottom: 12,
+ },
+ menuTitulo: {
+ fontSize: 20,
+ fontWeight: "bold",
+ color: "#fff",
+ marginBottom: 4,
+ },
+ menuDescricao: {
+ fontSize: 14,
+ color: "#fff",
+ opacity: 0.9,
+ },
+ logoutButton: {
+ margin: 20,
+ padding: 16,
+ backgroundColor: "#fff",
+ borderRadius: 12,
+ borderWidth: 2,
+ borderColor: "#f44336",
+ alignItems: "center",
+ },
+ logoutText: {
+ color: "#f44336",
+ fontWeight: "bold",
+ fontSize: 16,
+ },
+ footer: {
+ padding: 20,
+ alignItems: "center",
+ },
+ footerText: {
+ fontSize: 12,
+ color: "#666",
+ },
+ footerSubtext: {
+ fontSize: 10,
+ color: "#999",
+ },
 });
