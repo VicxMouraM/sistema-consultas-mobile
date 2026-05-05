@@ -4,7 +4,8 @@
  */
 
 import React from "react";
-import { View, ActivityIndicator, Text, StyleSheet } from "react-native";
+import { View, ActivityIndicator, Text } from "react-native";
+import { styles } from "../styles/loading.styles";
 
 type LoadingProps = {
  mensagem?: string;
@@ -18,17 +19,3 @@ export default function Loading({ mensagem = "Carregando..." }: LoadingProps) {
  </View>
  );
 }
-
-const styles = StyleSheet.create({
- container: {
- flex: 1,
- justifyContent: "center",
- alignItems: "center",
- backgroundColor: "#f5f5f5",
- },
- texto: {
- marginTop: 16,
- fontSize: 16,
- color: "#666",
- },
-});

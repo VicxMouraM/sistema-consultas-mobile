@@ -5,7 +5,7 @@
  */
 
 import React, { useEffect } from "react";
-import { View, Text, ActivityIndicator, StyleSheet } from "react-native";
+import { View, Text, ActivityIndicator } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useAuth } from "../contexts/AuthContext";
@@ -20,6 +20,7 @@ import {
  AdminScreen,
  AgendamentoScreen,
 } from "../screens";
+import { styles } from "../styles/index.styles";
 
 // Tipagem das rotas (boas práticas de TypeScript)
 export type RootStackParamList = {
@@ -188,27 +189,3 @@ export default function Navigation() {
  </NavigationContainer>
  );
 }
-
-const styles = StyleSheet.create({
- loadingContainer: {
- flex: 1,
- justifyContent: "center",
- alignItems: "center",
- backgroundColor: "#fff",
- },
- headerRight: {
- marginRight: 8,
- },
- userBadge: {
- flexDirection: "row",
- alignItems: "center",
- },
- userInfo: {
- alignItems: "flex-end",
- },
- userName: {
- color: "#fff",
- fontSize: 13,
- fontWeight: "600",
- },
-});

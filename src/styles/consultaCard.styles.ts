@@ -1,87 +1,82 @@
 import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
-  card: {
-    backgroundColor: "#fff",
-    borderRadius: 16,
-    padding: 20,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.2,
-    shadowRadius: 8,
-    elevation: 5,
-  },
-  statusBadge: {
-    backgroundColor: "#FFA500",
-    alignSelf: "flex-start",
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 20,
-    marginBottom: 20,
-  },
-  statusConfirmada: {
-    backgroundColor: "#4CAF50",
-  },
-  statusCancelada: {
-    backgroundColor: "#F44336",
-  },
-  statusTexto: {
-    color: "#fff",
-    fontWeight: "bold",
-    fontSize: 12,
-  },
-  secao: {
-    marginBottom: 20,
-    paddingBottom: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: "#e0e0e0",
-  },
-  label: {
-    fontSize: 16,
-    fontWeight: "bold",
-    color: "#79059C",
-    marginBottom: 8,
-  },
-  valor: {
-    fontSize: 18,
-    color: "#333",
-    marginBottom: 4,
-  },
-  info: {
-    fontSize: 14,
-    color: "#666",
-    marginBottom: 2,
-  },
-  observacoes: {
-    fontSize: 14,
-    color: "#555",
-    fontStyle: "italic",
-    marginTop: 8,
-  },
-  acoes: {
-    marginTop: 10,
-  },
-  botaoContainer: {
-    marginBottom: 12,
-  },
-  mensagem: {
-    backgroundColor: "#E8F5E9",
-    padding: 16,
-    borderRadius: 8,
-    borderLeftWidth: 4,
-    borderLeftColor: "#4CAF50",
-  },
-  mensagemCancelada: {
-    backgroundColor: "#FFEBEE",
-    padding: 16,
-    borderRadius: 8,
-    borderLeftWidth: 4,
-    borderLeftColor: "#F44336",
-  },
-  mensagemTexto: {
-    fontSize: 16,
-    color: "#333",
-    fontWeight: "600",
-    textAlign: "center",
-  },
+ card: {
+ backgroundColor: "#fff",
+ borderRadius: 12,
+ padding: 16,
+ marginVertical: 8,
+ marginHorizontal: 16,
+ boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
+ elevation: 3,
+ },
+ statusBadge: {
+ alignSelf: "flex-start",
+ paddingHorizontal: 12,
+ paddingVertical: 6,
+ borderRadius: 16,
+ marginBottom: 12,
+ },
+ statusTexto: {
+ color: "#fff",
+ fontWeight: "bold",
+ fontSize: 12,
+ textTransform: "uppercase",
+ },
+ info: {
+ marginBottom: 8,
+ },
+ row: {
+ flexDirection: "row",
+ gap: 12,
+ },
+ label: {
+ fontSize: 12,
+ color: "#666",
+ marginBottom: 2,
+ },
+ valor: {
+ fontSize: 16,
+ color: "#333",
+ fontWeight: "600",
+ },
+ valorSecundario: {
+ fontSize: 14,
+ color: "#555",
+ fontStyle: "italic",
+ },
+ acoes: {
+ flexDirection: "row",
+ flexWrap: "wrap",
+ gap: 8,
+ marginTop: 12,
+ },
+ botao: {
+ paddingHorizontal: 16,
+ paddingVertical: 10,
+ borderRadius: 8,
+ minWidth: 100,
+ alignItems: "center",
+ },
+ botaoConfirmar: {
+ backgroundColor: "#4CAF50",
+ },
+ botaoCancelar: {
+ backgroundColor: "#f44336",
+ },
+ botaoDetalhes: {
+ backgroundColor: "transparent",
+ borderWidth: 1,
+ borderColor: "#79059C",
+ },
+ botaoTexto: {
+ color: "#fff",
+ fontWeight: "bold",
+ fontSize: 14,
+ },
+ botaoTextoSecundario: {
+ color: "#79059C",
+ fontWeight: "bold",
+ fontSize: 14,
+ },
 });

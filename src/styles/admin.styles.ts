@@ -5,12 +5,10 @@ export const styles = StyleSheet.create({
  flex: 1,
  backgroundColor: "#f5f5f5",
  },
- scrollContent: {
- padding: 20,
- paddingBottom: 40,
- },
  header: {
- marginBottom: 32,
+ backgroundColor: "#79059C",
+ padding: 32,
+ paddingTop: 16,
  alignItems: "center",
  },
  icone: {
@@ -20,48 +18,73 @@ export const styles = StyleSheet.create({
  titulo: {
  fontSize: 28,
  fontWeight: "bold",
- color: "#79059C",
+ color: "#fff",
  marginBottom: 8,
  },
  subtitulo: {
  fontSize: 16,
- color: "#666",
+ color: "#fff",
+ opacity: 0.9,
  },
- menu: {
- gap: 16,
+ statsContainer: {
+ padding: 20,
  },
- card: {
+ sectionTitle: {
+ fontSize: 18,
+ fontWeight: "bold",
+ color: "#333",
+ marginBottom: 16,
+ },
+ statsGrid: {
+ flexDirection: "row",
+ flexWrap: "wrap",
+ gap: 12,
+ },
+ statCard: {
+ flex: 1,
+ minWidth: "45%",
+ padding: 20,
+ borderRadius: 12,
+ alignItems: "center",
+ },
+ statNumber: {
+ fontSize: 32,
+ fontWeight: "bold",
+ color: "#fff",
+ marginBottom: 4,
+ },
+ statLabel: {
+ fontSize: 14,
+ color: "#fff",
+ opacity: 0.9,
+ },
+ menuContainer: {
+ padding: 20,
+ paddingTop: 0,
+ },
+ menuItem: {
  padding: 24,
  borderRadius: 16,
- boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
+ marginBottom: 16,
  elevation: 3,
  },
- cardPrimario: {
- backgroundColor: "#79059C",
- },
- cardSecundario: {
- backgroundColor: "#4CAF50",
- },
- cardTerciario: {
- backgroundColor: "#FF9800",
- },
- cardIcone: {
- fontSize: 48,
+ menuIcone: {
+ fontSize: 40,
  marginBottom: 12,
  },
- cardTitulo: {
+ menuTitulo: {
  fontSize: 20,
  fontWeight: "bold",
  color: "#fff",
- marginBottom: 8,
+ marginBottom: 4,
  },
- cardDescricao: {
+ menuDescricao: {
  fontSize: 14,
  color: "#fff",
  opacity: 0.9,
  },
  logoutButton: {
- marginTop: 32,
+ margin: 20,
  padding: 16,
  backgroundColor: "#fff",
  borderRadius: 12,
@@ -75,8 +98,7 @@ export const styles = StyleSheet.create({
  fontSize: 16,
  },
  footer: {
- marginTop: 24,
- paddingTop: 20,
+ padding: 20,
  alignItems: "center",
  },
  footerText: {
@@ -86,6 +108,5 @@ export const styles = StyleSheet.create({
  footerSubtext: {
  fontSize: 10,
  color: "#999",
- marginTop: 4,
  },
 });
